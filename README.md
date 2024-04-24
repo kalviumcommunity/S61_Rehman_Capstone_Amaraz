@@ -1,6 +1,6 @@
 # AMARAZ
 
-## Idea breif
+## Idea brief
 The idea of this project is to develop a website that will serve as a comprehensive platform for small business owners  to manage their daily operations efficiently. It will provide features to list down all the orders of a particular day along with their prices, add the list of materials purchased and their prices, and calculate the day’s profits.
 
 ## Features
