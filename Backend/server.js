@@ -4,15 +4,10 @@ const app = express();
 const port = 3000;
 const mongoose = require('mongoose')
 require('dotenv').config()
+const inventoryRoutes = require('./routes')
 
-app.use(express.json())
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
-app.post('/post',(req , res) =>{
-    res.send(req.body);
-})
+app.use(express.json());
+app.use('/inventory', inventoryRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
