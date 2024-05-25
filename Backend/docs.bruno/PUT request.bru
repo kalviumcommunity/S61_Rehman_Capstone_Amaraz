@@ -1,0 +1,22 @@
+meta {
+  name: PUT request
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:3000/inventory/update/665067e4a7ae4ad35980cfa3
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "GPU",
+    "quantity": 45,
+    "purchasedPrice": 190.00,
+    "price": 270.00,
+    "supplier": "Habeeb Hussain"
+    
+  }
+}

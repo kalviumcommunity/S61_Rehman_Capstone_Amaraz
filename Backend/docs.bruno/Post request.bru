@@ -1,0 +1,22 @@
+meta {
+  name: Post request
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/inventory/post
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "keyboard",
+    "quantity": 45,
+    "purchasedPrice": 90.00,
+    "price": 120.00,
+    "supplier": "Habeeb"
+    
+  }
+}
