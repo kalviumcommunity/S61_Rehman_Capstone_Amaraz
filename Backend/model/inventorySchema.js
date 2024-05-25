@@ -21,7 +21,7 @@ const inventoryItemSchema = new Schema({
     supplier: { 
         type: String 
     },
-    timestamps: true
+ 
 });
 
 const InventoryItem = mongoose.model('InventoryItem', inventoryItemSchema);
