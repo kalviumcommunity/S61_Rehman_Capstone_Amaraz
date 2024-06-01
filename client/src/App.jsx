@@ -1,12 +1,11 @@
-import './App.css'
+import React from 'react';
+import { ChakraProvider } from '@chakra-ui/react';
+import LandingPage from './components/landingPage/LandingPage';
 
-function App() {
-
+const App = () => {
   return (
-    <>
-     
-    </>
-  )
-}
+    <LandingPage />
+  );
+};
 
-export default App
+export default App;
