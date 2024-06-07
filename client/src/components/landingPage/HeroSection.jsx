@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Stack,
@@ -84,6 +85,7 @@ export default function CallToActionWithImage() {
             <Stack
               spacing={{ base: 4, sm: 6 }}
               direction={{ base: 'column', sm: 'row' }}>
+              <Link to="/register">
               <Button
                 rounded={'full'}
                 size={'lg'}
@@ -94,6 +96,7 @@ export default function CallToActionWithImage() {
                 _hover={{ bg: '#FF4500' }}>
                 Get started
               </Button>
+              </Link>
             </Stack>
           </Stack>
           <Flex

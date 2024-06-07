@@ -1,10 +1,24 @@
 import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
+import Register from './components/loginAndRegister/signup';
+import Login from './components/loginAndRegister/login';
+import Dashboard from './components/dashboard/dashboard';
 import LandingPage from './components/landingPage/LandingPage';
 
 const App = () => {
   return (
-    <LandingPage />
+    <ChakraProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+    </ChakraProvider>
   );
 };
 

@@ -4,9 +4,13 @@ const port = 3000;
 const mongoose = require('mongoose')
 require('dotenv').config()
 const inventoryRoutes = require('./routes')
+const userRoutes = require('./routes/userRoutes')
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json());
 app.use('/inventory', inventoryRoutes);
+app.use('/user', userRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
