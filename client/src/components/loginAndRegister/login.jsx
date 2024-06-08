@@ -18,6 +18,8 @@ import {
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import api from '../api';
 import SignIn from '../asset/login.svg';
+import { FcGoogle } from "react-icons/fc";
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -37,6 +39,11 @@ const Login = () => {
       setError(error.response?.data || 'Login failed');
     }
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/auth/google";
+  };
+
   return (
       <Container maxW={'7xl'} py={{ base: 10, sm: 10, lg: 16 }}>
         <Box
@@ -133,6 +140,12 @@ const Login = () => {
                     Sign up
                   </Link>
                 </Text>
+                <Text color={'gray.500'} fontSize={{ base: 'xs', sm:'sm' }} textAlign={'center'} mt={4}>
+                  Or sign in with
+                </Text>
+                <Button onClick={handleGoogleLogin} >
+                  <FcGoogle size={30}/>oogle
+                </Button>
               </Stack>
             </Stack>
           </Flex>
