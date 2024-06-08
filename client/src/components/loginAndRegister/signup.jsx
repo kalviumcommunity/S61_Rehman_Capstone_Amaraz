@@ -17,6 +17,7 @@ import {
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import api from '../api';
 import RegisterImg from '../asset/signUp.svg';
+import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -43,7 +44,9 @@ const Register = () => {
       setError(error.response?.data || 'Registration failed');
     }
   };
-
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:3000/auth/google";
+  };
 
   return (
       <Container maxW={'7xl'} height={'100vh'} py={{ base: 10, sm: 10, lg: 16 }} >
@@ -163,6 +166,9 @@ const Register = () => {
                   Sign in
                 </Link>
               </Text>
+              <Button onClick={handleGoogleLogin}>
+                <FcGoogle size={30} />oogle
+              </Button>
             </Stack>
           </Flex>
         </Box>
