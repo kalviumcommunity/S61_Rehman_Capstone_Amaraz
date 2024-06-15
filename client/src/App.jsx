@@ -5,6 +5,9 @@ import Register from './components/loginAndRegister/signup';
 import Login from './components/loginAndRegister/login';
 import Dashboard from './components/dashboard/dashboard';
 import LandingPage from './components/landingPage/LandingPage';
+import InventoryInfo from './components/dashboard/inventoryInfo';
+import AddInventory from './components/dashboard/fileUpload';
+
 
 const App = () => {
   return (
@@ -16,6 +19,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/addInventory" element={<AddInventory/>}/>
+          <Route path="/inventoryInfo" element={<InventoryInfo/>} />
         </Routes>
       </Router>
     </ChakraProvider>

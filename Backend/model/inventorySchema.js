@@ -14,7 +14,7 @@ const inventoryItemSchema = new Schema({
         type: Number,
         required: true,
     },
-    price: {
+    SellingPrice: {
         type: Number,
         required: true
     },
