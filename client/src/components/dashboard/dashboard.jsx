@@ -18,6 +18,18 @@ import InventoryList from './dash';
 import AddInventory from '../asset/AddInventory.svg';
 import AddInventoryItem from './fileUpload';
 import Overview from './overview';
+// import { useLocation } from 'react-router-dom';
+// import { useEffect } from 'react';
+
+
+// useEffect(() => {
+//   const params = new URLSearchParams(location.search);
+//   const token = params.get('token');
+//   if (token) {
+//     localStorage.setItem('token', token);
+//     window.location.search = ''; // Clear the URL query string
+//   }
+// }, [location]);
 
 function Dashboard() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,6 +41,10 @@ function Dashboard() {
         <Box w={{ base: '100%', md: '94%' }} paddingLeft="5%">
           <Overview />
           <Box overflow="hidden">
+            {/* <Flex mb="4" alignItems="center" direction={{ base: 'column', md: 'row' }}>
+              <Input placeholder="Search" size="md" w={{ base: '100%', md: '50%' }} mb={{ base: 2, md: 0 }} />
+              <IconButton ml={{ base: 0, md: 2 }} aria-label="Search" icon={<SearchIcon />} />
+            </Flex> */}
             <Box maxHeight="400px" overflowY="auto">
               <InventoryList />
             </Box>

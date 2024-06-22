@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 import {
   Box,
   Button,
+  Image,
   Table,
   Thead,
   Tbody,
@@ -30,6 +31,7 @@ function InventoryInfo() {
   const token = localStorage.getItem('token');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchQuery, setSearchQuery] = useState('');
+  const imageSize = useBreakpointValue({ base: "30px", md: "50px" });
   const fontSize = useBreakpointValue({ base: "sm", md: "md" });
   const isTableView = useBreakpointValue({ base: false, md: true });
   const toast = useToast();
@@ -59,6 +61,7 @@ function InventoryInfo() {
     try {
       await axios.delete(`http://localhost:3000/inventory/delete/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` }
+
       });
       setItems(items.filter(item => item._id !== itemId));
       toast({
@@ -68,6 +71,7 @@ function InventoryInfo() {
         duration: 3000,
         isClosable: true,
       });
+    
     } catch (err) {
       toast({
         title: "Error in deleting an item",
@@ -86,8 +90,8 @@ function InventoryInfo() {
 
   return (
     <Box bg="white">
-      <Navbar />
-      <Box bg="white" textAlign="center" paddingLeft={"5%"}>
+        <Navbar/>
+      <Box bg="white" textAlign="center" paddingLeft={"5%"} >
         <Heading fontSize={30} mb={4}>Inventory List</Heading>
         <Input
           placeholder="Search for items"
@@ -105,6 +109,7 @@ function InventoryInfo() {
               <Tr>
                 <Th>ID</Th>
                 <Th>Date</Th>
+                <Th>Image</Th>
                 <Th>Item Name</Th>
                 <Th>Purchased Price</Th>
                 <Th>Selling Price</Th>
@@ -119,12 +124,13 @@ function InventoryInfo() {
                 <Tr key={item._id}>
                   <Td>{item._id}</Td>
                   <Td>{new Date(item.updatedAt).toLocaleDateString()}</Td>
+                  <Td><Image borderRadius="50%" src={`http://localhost:3000${item.imageUrl}`} alt={item.name} boxSize={imageSize} /></Td>
                   <Td>{item.name}</Td>
                   <Td>${item.purchasedPrice}</Td>
                   <Td>${item.price}</Td>
                   <Td>{item.quantity}</Td>
                   <Td>{item.supplier}</Td>
-                  <Td>{new Date(item.updatedAt).toLocaleTimeString()}</Td>
+                  <Td>{new Date(item.updatedAt).toLocaleTimeString()}</Td> 
                   <Td>
                     <Button onClick={() => handleUpdateItemClick(item._id)} colorScheme="green" size="sm">
                       Update Item
@@ -144,6 +150,7 @@ function InventoryInfo() {
             {filteredItems.map(item => (
               <Card key={item._id}>
                 <CardBody>
+                  <Image borderRadius="full" src={`http://localhost:3000${item.imageUrl}`} alt={item.name} boxSize="80px" />
                   <Text mt={2} fontSize="xl" fontWeight="bold">{item.name}</Text>
                   <Text>ID: {item._id}</Text>
                   <Text>Date: {new Date(item.updatedAt).toLocaleDateString()}</Text>
