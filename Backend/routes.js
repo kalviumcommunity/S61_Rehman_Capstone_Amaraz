@@ -1,20 +1,21 @@
 const express = require('express');
 const InventoryItem = require('./model/inventorySchema');
+const auth = require('./middleware/auth');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
-    const items = await InventoryItem.find();
+    const items = await InventoryItem.find({ userId: req.user.userId });
     res.json(items);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
-    const item = await InventoryItem.findOne({ _id: req.params.id });
+    const item = await InventoryItem.findOne({ _id: req.params.id, userId: req.user.userId });
     if (!item) {
       return res.status(404).json({ message: 'Item not found' });
     }
@@ -24,7 +25,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/post', async (req, res) => {
+router.post('/post', auth, async (req, res) => {
   try {
     const { name, quantity, purchasedPrice, price, supplier } = req.body;
 
@@ -33,7 +34,8 @@ router.post('/post', async (req, res) => {
       quantity,
       purchasedPrice,
       price,
-      supplier
+      supplier,
+      userId: req.user.userId
     });
 
     await newInventoryItem.save();
@@ -43,15 +45,15 @@ router.post('/post', async (req, res) => {
   }
 });
 
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', auth, async (req, res) => {
   const itemId = req.params.id;
-  const { name, quantity, purchasedPrice, price, supplier } = req.body;
+  const { name, quantity, purchasedPrice, price, supplier, pendingQuantity, status } = req.body;
 
   try {
-    const updatedFields = { name, quantity, purchasedPrice, price, supplier };
+    const updatedFields = { name, quantity, purchasedPrice, price, supplier, pendingQuantity, status };
 
     const updatedItem = await InventoryItem.findOneAndUpdate(
-      { _id: itemId },
+      { _id: itemId, userId: req.user.userId },
       updatedFields,
       { new: true }
     );
@@ -64,10 +66,11 @@ router.put('/update/:id', async (req, res) => {
   }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', auth, async (req, res) => {
   const itemId = req.params.id;
   try {
-    const deletedItem = await InventoryItem.findOneAndDelete({ _id: itemId });
+    const deletedItem = await InventoryItem.findOneAndDelete({ 
+      _id: itemId, userId: req.user.userId });
     if (!deletedItem) {
       return res.status(404).send("Item is unavailable");
     }

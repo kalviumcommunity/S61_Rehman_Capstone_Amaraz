@@ -21,20 +21,25 @@ import {
   Card,
   CardBody,
   CardFooter,
+  useToast,
 } from '@chakra-ui/react';
 
 function InventoryInfo() {
   const [items, setItems] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const token = localStorage.getItem('token');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchQuery, setSearchQuery] = useState('');
   const fontSize = useBreakpointValue({ base: "sm", md: "md" });
   const isTableView = useBreakpointValue({ base: false, md: true });
+  const toast = useToast();
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get('http://localhost:3000/inventory');
+        const res = await axios.get('http://localhost:3000/inventory', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setItems(res.data);
       } catch (err) {
         console.error(err);
@@ -42,7 +47,7 @@ function InventoryInfo() {
     }
 
     fetchData();
-  }, []);
+  }, [token]);
 
   const handleUpdateItemClick = (itemId) => {
     setSelectedItemId(itemId);
@@ -52,9 +57,25 @@ function InventoryInfo() {
 
   const handleDeleteItemClick = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:3000/inventory/delete/${itemId}`);
+      await axios.delete(`http://localhost:3000/inventory/delete/${itemId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setItems(items.filter(item => item._id !== itemId));
+      toast({
+        title: "Item deleted",
+        description: "Item has been deleted",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
     } catch (err) {
+      toast({
+        title: "Error in deleting an item",
+        description: err.response?.data?.message || "An error occurred",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
       console.error('Error deleting item:', err);
     }
   };
@@ -66,7 +87,7 @@ function InventoryInfo() {
   return (
     <Box bg="white">
       <Navbar />
-      <Box bg="white" textAlign="center" paddingLeft={"5%"} >
+      <Box bg="white" textAlign="center" paddingLeft={"5%"}>
         <Heading fontSize={30} mb={4}>Inventory List</Heading>
         <Input
           placeholder="Search for items"

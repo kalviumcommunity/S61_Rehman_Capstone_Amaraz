@@ -15,6 +15,7 @@ import {
   Text,
   Input,
   Badge,
+  useToast,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -31,15 +32,20 @@ import {
 
 function InventoryList() {
   const [items, setItems] = useState([]);
+  const [stats, setStats] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [quantity, setQuantity] = useState(1); 
+  const [quantity, setQuantity] = useState(1);
+  const token = localStorage.getItem('token');
+  const toast = useToast(); 
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get('http://localhost:3000/inventory');
+        const res = await axios.get('http://localhost:3000/inventory', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setItems(res.data);
       } catch (err) {
         console.error(err);
@@ -47,7 +53,8 @@ function InventoryList() {
     }
 
     fetchData();
-  }, []);
+
+  }, [token]);
 
   const displayAsTable = useBreakpointValue({ base: false, md: true });
 
@@ -71,18 +78,39 @@ function InventoryList() {
       console.error('Invalid item or quantity');
       return;
     }
-
+  
     const url = `http://localhost:3000/inventory/update/${selectedItem._id}`;
-
+    const headers = { Authorization: `Bearer ${token}` };
+  
+    console.log(`Sending PUT request to ${url}`);
+    console.log('Headers:', headers);
+  
     axios
-      .put(url, { pendingQuantity: quantity })
+      .put(url, {
+        ...selectedItem,
+        pendingQuantity: quantity,
+        status: 'pending'
+      }, { headers })
       .then(res => {
         console.log('Response:', res.data);
+        toast({
+          title: "Item added successfully to bill",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
       })
       .catch(err => {
+        toast({
+          title: "Error adding item to bill",
+          description: err.response?.data?.message || "An error occurred",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
         console.error('Error:', err);
       });
-
+  
     console.log(`Adding ${quantity} of ${selectedItem.name} to bill.`);
     closeModal();
   };
@@ -93,9 +121,7 @@ function InventoryList() {
       <Input
         placeholder="Search for items"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        w={{ base: '100%', md: '50%' }}
-        mb={{ base: 2, md: 0 }}
+        onChange={(e) => setSearchQuery(e.target.value)} w={{ base: '100%', md: '50%' }} mb={{ base: 2, md: 0 }}
       />
       <Text mb={10} mt={5}>
         Number of items: <Badge colorScheme="green">{filteredItems.length}</Badge>
@@ -156,7 +182,7 @@ function InventoryList() {
           <ModalCloseButton />
           <ModalBody>
             <Text mb={2}>Enter quantity:</Text>
-            <NumberInput defaultValue={quantity} min={1} max={selectedItem?.quantity} onChange={(value) => setQuantity(parseInt(value))}>
+            <NumberInput defaultValue={quantity} min={1} max={selectedItem?.quantity} onChange={(value) => setQuantity(value)}>
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
