@@ -1,8 +1,20 @@
 const express = require('express');
+const multer = require('multer');
 const InventoryItem = require('./model/inventorySchema');
 const auth = require('./middleware/auth');
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 router.get('/', auth, async (req, res) => {
   try {
@@ -25,9 +37,10 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-router.post('/post', auth, async (req, res) => {
+router.post('/post', auth, upload.single('image'), async (req, res) => {
   try {
     const { name, quantity, purchasedPrice, price, supplier } = req.body;
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
     const newInventoryItem = new InventoryItem({
       name,
@@ -35,6 +48,7 @@ router.post('/post', auth, async (req, res) => {
       purchasedPrice,
       price,
       supplier,
+      imageUrl,
       userId: req.user.userId
     });
 
@@ -45,12 +59,16 @@ router.post('/post', auth, async (req, res) => {
   }
 });
 
-router.put('/update/:id', auth, async (req, res) => {
+router.put('/update/:id', auth, upload.single('image'), async (req, res) => {
   const itemId = req.params.id;
   const { name, quantity, purchasedPrice, price, supplier, pendingQuantity, status } = req.body;
+  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
     const updatedFields = { name, quantity, purchasedPrice, price, supplier, pendingQuantity, status };
+    if (imageUrl) {
+      updatedFields.imageUrl = imageUrl;
+    }
 
     const updatedItem = await InventoryItem.findOneAndUpdate(
       { _id: itemId, userId: req.user.userId },
@@ -78,6 +96,13 @@ router.delete('/delete/:id', auth, async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+router.post('/upload', auth, upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No file uploaded');
+  }
+  res.send('File uploaded successfully');
 });
 
 module.exports = router;

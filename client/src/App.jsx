@@ -7,6 +7,7 @@ import Dashboard from './components/dashboard/dashboard';
 import LandingPage from './components/landingPage/LandingPage';
 import InventoryInfo from './components/dashboard/inventoryInfo';
 import AddInventory from './components/dashboard/fileUpload';
+import Orders from './components/dashboard/AllOrders';
 
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" />} />
           <Route path="/addInventory" element={<AddInventory/>}/>
           <Route path="/inventoryInfo" element={<InventoryInfo/>} />
+          <Route path="/allOrders" element={<Orders/>} />
         </Routes>
       </Router>
     </ChakraProvider>

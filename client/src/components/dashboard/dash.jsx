@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   Box,
   Button,
+  Image,
   Table,
   Thead,
   Tbody,
@@ -13,6 +14,7 @@ import {
   Stack,
   Heading,
   Text,
+  Flex,
   Input,
   Badge,
   useToast,
@@ -64,6 +66,7 @@ function InventoryList() {
 
   const openModal = (item) => {
     setSelectedItem(item);
+
     setShowModal(true);
   };
 
@@ -74,7 +77,7 @@ function InventoryList() {
   };
 
   const handleAddToBill = () => {
-    if (!selectedItem || quantity < 1 || quantity > selectedItem.quantity) {
+    if (!selectedItem || quantity < 1 && quantity > selectedItem.quantity) {
       console.error('Invalid item or quantity');
       return;
     }
@@ -88,7 +91,7 @@ function InventoryList() {
     axios
       .put(url, {
         ...selectedItem,
-        pendingQuantity: quantity,
+        pendingQuantity:quantity,
         status: 'pending'
       }, { headers })
       .then(res => {
@@ -100,6 +103,7 @@ function InventoryList() {
           isClosable: true,
         });
       })
+      
       .catch(err => {
         toast({
           title: "Error adding item to bill",
@@ -130,6 +134,7 @@ function InventoryList() {
         <Table variant="simple">
           <Thead>
             <Tr>
+              <Th>Image</Th>
               <Th>Product Name</Th>
               <Th>Quantity Available</Th>
               <Th>Price</Th>
@@ -139,6 +144,14 @@ function InventoryList() {
           <Tbody>
             {filteredItems.map(item => (
               <Tr key={item._id}>
+                <Td>
+                  <Image
+                    borderRadius="full"
+                    src={`http://localhost:3000${item.imageUrl}`}
+                    alt={item.name}
+                    boxSize="80px"
+                  />
+                </Td>
                 <Td>{item.name}</Td>
                 <Td>{item.quantity}</Td>
                 <Td>${item.price}</Td>
@@ -162,6 +175,12 @@ function InventoryList() {
               flexDirection="column"
               alignItems="center"
             >
+              <Image
+                borderRadius="full"
+                src={`http://localhost:3000${item.imageUrl}`}
+                alt={item.name}
+                boxSize="80px"
+              />
               <Text mt={2} fontSize="xl" fontWeight="bold">
                 {item.name}
               </Text>

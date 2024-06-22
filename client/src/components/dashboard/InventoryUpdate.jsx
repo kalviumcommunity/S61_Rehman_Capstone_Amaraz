@@ -23,7 +23,7 @@ function UpdateItemModal({ isOpen, onClose, itemId }) {
   const [purchasedPrice, setPurchasedPrice] = useState(0);
   const [price, setPrice] = useState(0);
   const [supplier, setSupplier] = useState('');
-
+  const [image, setImage] = useState(null);
   const toast = useToast(); 
 
   useEffect(() => {
@@ -52,20 +52,27 @@ function UpdateItemModal({ isOpen, onClose, itemId }) {
     }
   }, [itemId, isOpen]);
 
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('quantity', quantity);
+    formData.append('purchasedPrice', purchasedPrice);
+    formData.append('price', price);
+    formData.append('supplier', supplier);
+    if (image) {
+      formData.append('image', image);
+    }
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:3000/inventory/update/${itemId}`, {
-        name,
-        quantity,
-        purchasedPrice,
-        price,
-        supplier
-      }, {
+      await axios.put(`http://localhost:3000/inventory/update/${itemId}`, formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         }
       });
@@ -123,6 +130,10 @@ function UpdateItemModal({ isOpen, onClose, itemId }) {
             <FormControl isRequired mt={4}>
               <FormLabel>Supplier</FormLabel>
               <Input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} />
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Image</FormLabel>
+              <Input type="file" onChange={handleImageChange} />
             </FormControl>
             <ModalFooter justifyContent="center" gap={"10px"}>
               <Button colorScheme="blue" mr={3} type="submit">

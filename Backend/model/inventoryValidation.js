@@ -6,7 +6,9 @@ const inventoryItemValidationSchema = Joi.object({
     purchasedPrice: Joi.number().positive().required(),
     price: Joi.number().positive().required(),
     supplier: Joi.string().allow('').optional(),
+    imageUrl: Joi.string().uri().optional(),
     userId: Joi.string().required(),
+    
 });
 
 module.exports = inventoryItemValidationSchema;

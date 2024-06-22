@@ -12,6 +12,8 @@ const port = 3000;
 const userRoutes = require('./routes/userRoutes');
 const passportConfig = require('./routes/passportConfig');
 const inventoryRoutes = require('./routes');
+const path = require('path');
+
 
 app.use(express.json());
 app.use(cors());
@@ -19,6 +21,8 @@ app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitializ
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passportConfig);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes);

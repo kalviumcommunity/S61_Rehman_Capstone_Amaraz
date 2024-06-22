@@ -21,6 +21,10 @@ const inventoryItemSchema = new Schema({
     supplier: { 
         type: String 
     },
+    imageUrl: {
+         type: String ,
+
+    },
     userId: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
