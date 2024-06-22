@@ -14,15 +14,23 @@ const inventoryItemSchema = new Schema({
         type: Number,
         required: true,
     },
-    SellingPrice: {
+    price: {
         type: Number,
         required: true
     },
     supplier: { 
         type: String 
     },
- 
+    userId: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true 
+        },
+}, 
+{
+    timestamps: true
 });
+
 
 const InventoryItem = mongoose.model('InventoryItem', inventoryItemSchema);
 

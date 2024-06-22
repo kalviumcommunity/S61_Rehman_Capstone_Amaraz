@@ -27,15 +27,21 @@ function AddItemModal({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const itemData = {
+      name,
+      quantity,
+      purchasedPrice,
+      price,
+      supplier,
+    };
+
     try {
-      const formData = {
-        name,
-        quantity,
-        purchasedPrice,
-        price,
-        supplier
-      };
-      await axios.post('http://localhost:3000/inventory/post', formData);
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:3000/inventory/post', itemData, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       toast({
         title: "Item added successfully",
         status: "success",

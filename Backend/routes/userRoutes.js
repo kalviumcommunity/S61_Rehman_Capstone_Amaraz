@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../model/userSchema');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -37,8 +38,12 @@ router.post('/login', async (req, res) => {
   }
 
   const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
-  res.cookie('jwt', token, { httpOnly: true });
   res.json({ token });
+});
+
+router.get('/profile', auth, async (req, res) => {
+  const user = await User.findById(req.user.userId);
+  res.json(user);
 });
 
 module.exports = router;

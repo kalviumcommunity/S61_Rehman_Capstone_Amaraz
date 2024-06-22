@@ -23,12 +23,18 @@ function UpdateItemModal({ isOpen, onClose, itemId }) {
   const [purchasedPrice, setPurchasedPrice] = useState(0);
   const [price, setPrice] = useState(0);
   const [supplier, setSupplier] = useState('');
+
   const toast = useToast(); 
 
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/inventory/${itemId}`);
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`http://localhost:3000/inventory/${itemId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const item = res.data;
 
         setName(item.name);
@@ -46,18 +52,24 @@ function UpdateItemModal({ isOpen, onClose, itemId }) {
     }
   }, [itemId, isOpen]);
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const updatedItem = {
-      name,
-      quantity,
-      purchasedPrice,
-      price,
-      supplier
-    };
 
     try {
-      await axios.put(`http://localhost:3000/inventory/update/${itemId}`, updatedItem);
+      const token = localStorage.getItem('token');
+      await axios.put(`http://localhost:3000/inventory/update/${itemId}`, {
+        name,
+        quantity,
+        purchasedPrice,
+        price,
+        supplier
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
       toast({
         title: "Item updated successfully",
         status: "success",
