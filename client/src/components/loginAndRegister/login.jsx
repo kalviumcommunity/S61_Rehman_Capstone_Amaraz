@@ -35,13 +35,14 @@ const Login = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('loginTime', new Date().getTime());
       navigate('/dashboard');
+
     } catch (error) {
       setError(error.response?.data || 'Login failed');
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "https://s61-rehman-capstone-amaraz.onrender.com/auth/google";
   };
 
   return (

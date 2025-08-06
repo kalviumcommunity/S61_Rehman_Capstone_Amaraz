@@ -39,13 +39,13 @@ const Register = () => {
     try {
       await api.post('/register', { email, username, password });
       alert('Registration successful');
-      navigate('/dashboard');
+      navigate('/login');
     } catch (error) {
       setError(error.response?.data || 'Registration failed');
     }
   };
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = "https://s61-rehman-capstone-amaraz.onrender.com/auth/google";
   };
 
   return (

@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: "https://client-47ly5m77k-sk-habeeb-ur-rehmans-projects.vercel.app/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -66,10 +66,10 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/login",
+    failureRedirect: "https://client-47ly5m77k-sk-habeeb-ur-rehmans-projects.vercel.app/login",
   }),
   (req, res) => {
-    res.redirect("http://localhost:5173/dashboard");
+    res.redirect("https://client-47ly5m77k-sk-habeeb-ur-rehmans-projects.vercel.app/dashboard");
   }
 );
 

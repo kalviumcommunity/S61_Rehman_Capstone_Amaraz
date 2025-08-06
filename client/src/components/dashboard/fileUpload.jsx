@@ -102,10 +102,10 @@ function AddItemModal({ isOpen, onClose }) {
               <FormLabel>Supplier</FormLabel>
               <Input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} />
             </FormControl>
-            <FormControl isRequired mt={4}>
+            {/* <FormControl isRequired mt={4}>
               <FormLabel>Image</FormLabel>
               <Input type="file" onChange={handleImageChange} />
-            </FormControl>
+            </FormControl> */}
             <ModalFooter justifyContent="center" gap={"7px"}>
             <Button color={"white"} colorScheme={"red"} onClick={onClose}>Cancel</Button>
               <Button colorScheme="blue" mr={3} type="submit">

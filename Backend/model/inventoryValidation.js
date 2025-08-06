@@ -7,7 +7,7 @@ const inventoryItemValidationSchema = Joi.object({
     price: Joi.number().positive().required(),
     supplier: Joi.string().allow('').optional(),
     imageUrl: Joi.string().uri().optional(),
-    userId: Joi.string().required(),
+    userId: Joi.string().required().optional(),
     
 });
 
