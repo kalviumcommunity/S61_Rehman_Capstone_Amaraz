@@ -11,7 +11,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://client-47ly5m77k-sk-habeeb-ur-rehmans-projects.vercel.app/auth/google/callback",
+      callbackURL: "https://s61-rehman-capstone-amaraz.onrender.com/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
