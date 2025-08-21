@@ -180,10 +180,10 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "https://client-47ly5m77k-sk-habeeb-ur-rehmans-projects.vercel.app/login",
+    failureRedirect: "https://client-23q9vqpbf-sk-habeeb-ur-rehmans-projects.vercel.app/login",
   }),
   (req, res) => {
-    res.redirect("https://client-47ly5m77k-sk-habeeb-ur-rehmans-projects.vercel.app/dashboard");
+    res.redirect("https://client-23q9vqpbf-sk-habeeb-ur-rehmans-projects.vercel.app/dashboard");
   }
 );
 
