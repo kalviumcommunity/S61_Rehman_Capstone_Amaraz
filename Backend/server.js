@@ -28,7 +28,7 @@ app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes);
 
 app.use(cors({
-  origin: 'https://client-23q9vqpbf-sk-habeeb-ur-rehmans-projects.vercel.app/',
+  origin: 'https://client-orcin-three.vercel.app/',
   credentials: true
 }));
 
