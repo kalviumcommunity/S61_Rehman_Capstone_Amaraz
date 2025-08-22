@@ -30,7 +30,7 @@ function UpdateItemModal({ isOpen, onClose, itemId }) {
     const fetchItem = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:3000/inventory/${itemId}`, {
+        const res = await axios.get(`https://s61-rehman-capstone-amaraz.onrender.com/inventory/${itemId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -70,7 +70,7 @@ function UpdateItemModal({ isOpen, onClose, itemId }) {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:3000/inventory/update/${itemId}`, formData, {
+      await axios.put(`https://s61-rehman-capstone-amaraz.onrender.com/inventory/update/${itemId}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`

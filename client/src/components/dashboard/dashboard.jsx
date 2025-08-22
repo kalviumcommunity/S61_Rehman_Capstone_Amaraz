@@ -20,14 +20,19 @@ import AddInventoryItem from './fileUpload';
 import Overview from './overview';
 // import { useLocation } from 'react-router-dom';
 // import { useEffect } from 'react';
+let token = localStorage.getItem('token');
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const googleToken = urlParams.get("token");
+
+  googleToken ? token = googleToken : token
 
 // useEffect(() => {
 //   const params = new URLSearchParams(location.search);
 //   const token = params.get('token');
 //   if (token) {
 //     localStorage.setItem('token', token);
-//     window.location.search = ''; // Clear the URL query string
+//     window.location.search = ''; 
 //   }
 // }, [location]);
 

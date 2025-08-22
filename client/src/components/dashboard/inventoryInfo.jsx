@@ -39,7 +39,7 @@ function InventoryInfo() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get('http://localhost:3000/inventory', {
+        const res = await axios.get('https://s61-rehman-capstone-amaraz.onrender.com/inventory', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setItems(res.data);
@@ -59,7 +59,7 @@ function InventoryInfo() {
 
   const handleDeleteItemClick = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:3000/inventory/delete/${itemId}`, {
+      await axios.delete(`https://s61-rehman-capstone-amaraz.onrender.com/inventory/delete/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` }
 
       });
@@ -124,7 +124,7 @@ function InventoryInfo() {
                 <Tr key={item._id}>
                   <Td>{item._id}</Td>
                   <Td>{new Date(item.updatedAt).toLocaleDateString()}</Td>
-                  <Td><Image borderRadius="50%" src={`http://localhost:3000${item.imageUrl}`} alt={item.name} boxSize={imageSize} /></Td>
+                  <Td><Image borderRadius="50%" src={`https://s61-rehman-capstone-amaraz.onrender.com${item.imageUrl}`} alt={item.name} boxSize={imageSize} /></Td>
                   <Td>{item.name}</Td>
                   <Td>${item.purchasedPrice}</Td>
                   <Td>${item.price}</Td>
@@ -150,7 +150,7 @@ function InventoryInfo() {
             {filteredItems.map(item => (
               <Card key={item._id}>
                 <CardBody>
-                  <Image borderRadius="full" src={`http://localhost:3000${item.imageUrl}`} alt={item.name} boxSize="80px" />
+                  <Image borderRadius="full" src={`https://s61-rehman-capstone-amaraz.onrender.com${item.imageUrl}`} alt={item.name} boxSize="80px" />
                   <Text mt={2} fontSize="xl" fontWeight="bold">{item.name}</Text>
                   <Text>ID: {item._id}</Text>
                   <Text>Date: {new Date(item.updatedAt).toLocaleDateString()}</Text>

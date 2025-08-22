@@ -45,7 +45,7 @@ function InventoryList() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get('http://localhost:3000/inventory', {
+        const res = await axios.get('https://s61-rehman-capstone-amaraz.onrender.com/inventory', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setItems(res.data);
@@ -82,7 +82,7 @@ function InventoryList() {
       return;
     }
   
-    const url = `http://localhost:3000/inventory/update/${selectedItem._id}`;
+    const url = `https://s61-rehman-capstone-amaraz.onrender.com/inventory/update/${selectedItem._id}`;
     const headers = { Authorization: `Bearer ${token}` };
   
     console.log(`Sending PUT request to ${url}`);
@@ -147,7 +147,7 @@ function InventoryList() {
                 <Td>
                   <Image
                     borderRadius="full"
-                    src={`http://localhost:3000${item.imageUrl}`}
+                    src={`https://s61-rehman-capstone-amaraz.onrender.com${item.imageUrl}`}
                     alt={item.name}
                     boxSize="80px"
                   />
@@ -177,7 +177,7 @@ function InventoryList() {
             >
               <Image
                 borderRadius="full"
-                src={`http://localhost:3000${item.imageUrl}`}
+                src={`https://s61-rehman-capstone-amaraz.onrender.com${item.imageUrl}`}
                 alt={item.name}
                 boxSize="80px"
               />

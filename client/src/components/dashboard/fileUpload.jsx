@@ -42,7 +42,7 @@ function AddItemModal({ isOpen, onClose }) {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:3000/inventory/post', formData, {
+      await axios.post('https://s61-rehman-capstone-amaraz.onrender.com/inventory/post', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`

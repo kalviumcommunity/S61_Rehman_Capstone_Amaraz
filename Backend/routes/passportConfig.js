@@ -138,6 +138,7 @@ passport.use(
             googleId: profile.id
           });
           await user.save();
+           console.log("✅ New Google user saved:", user.email);
         }
 
         return done(null, user);
