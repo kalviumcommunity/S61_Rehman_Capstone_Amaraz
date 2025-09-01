@@ -6,22 +6,17 @@ const auth = require('./middleware/auth');
 const router = express.Router();
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
+  destination: (req, file, cb) => cb(null, 'uploads/'),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
-
 const upload = multer({ storage });
 
 router.get('/', auth, async (req, res) => {
   try {
     const items = await InventoryItem.find({ userId: req.user.userId });
-    res.json(items);
+    return res.json(items);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
@@ -31,9 +26,9 @@ router.get('/:id', auth, async (req, res) => {
     if (!item) {
       return res.status(404).json({ message: 'Item not found' });
     }
-    res.json(item);
+    return res.json(item);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
@@ -53,9 +48,9 @@ router.post('/post', auth, upload.single('image'), async (req, res) => {
     });
 
     await newInventoryItem.save();
-    res.json(newInventoryItem);
+    return res.json(newInventoryItem);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
@@ -66,35 +61,34 @@ router.put('/update/:id', auth, upload.single('image'), async (req, res) => {
 
   try {
     const updatedFields = { name, quantity, purchasedPrice, price, supplier, pendingQuantity, status };
-    if (imageUrl) {
-      updatedFields.imageUrl = imageUrl;
-    }
+    if (imageUrl) updatedFields.imageUrl = imageUrl;
 
     const updatedItem = await InventoryItem.findOneAndUpdate(
       { _id: itemId, userId: req.user.userId },
       updatedFields,
       { new: true }
     );
+
     if (!updatedItem) {
       return res.status(404).send("Item not found");
     }
-    res.json(updatedItem);
+
+    return res.json(updatedItem);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
 router.delete('/delete/:id', auth, async (req, res) => {
   const itemId = req.params.id;
   try {
-    const deletedItem = await InventoryItem.findOneAndDelete({ 
-      _id: itemId, userId: req.user.userId });
+    const deletedItem = await InventoryItem.findOneAndDelete({ _id: itemId, userId: req.user.userId });
     if (!deletedItem) {
       return res.status(404).send("Item is unavailable");
     }
-    res.json(deletedItem);
+    return res.json(deletedItem);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 });
 
@@ -102,7 +96,7 @@ router.post('/upload', auth, upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded');
   }
-  res.send('File uploaded successfully');
+  return res.send('File uploaded successfully');
 });
 
 module.exports = router;

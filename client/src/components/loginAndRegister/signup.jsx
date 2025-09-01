@@ -19,6 +19,7 @@ import api from '../api';
 import RegisterImg from '../asset/signUp.svg';
 import { FcGoogle } from "react-icons/fc";
 
+
 const Register = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -30,22 +31,21 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
-
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
     try {
-      await api.post('/register', { email, username, password });
+      await api.post('/user/register', { email, username, password });
       alert('Registration successful');
       navigate('/login');
-    } catch (error) {
-      setError(error.response?.data || 'Registration failed');
+    } catch (err) {
+      setError(err.response?.data || 'Registration failed');
     }
   };
+
   const handleGoogleLogin = () => {
-    window.location.href = "https://s61-rehman-capstone-amaraz.onrender.com/auth/google";
+    window.location.href = 'https://s61-rehman-capstone-amaraz.onrender.com/auth/google';
   };
 
   return (

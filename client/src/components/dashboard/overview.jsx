@@ -4,7 +4,7 @@ import { Text, Box, Flex, Center } from '@chakra-ui/react';
 function Overview() {
   return (
     <Box p={{ base: 2, md: 4 }}>
-      <Text textAlign={"center"} fontSize={{ base: "2xl", md: "3xl" }} mb={{ base: 2, md: 4 }}>Overview</Text>
+      <Text textAlign={"center"} fontSize={{ base: "2xl", md: "3xl" }} mb={{ base: 2, md: 4 }}>Overview </Text>
       <Flex
         justifyContent="space-between"
         mb={{ base: 4, md: 8 }}
