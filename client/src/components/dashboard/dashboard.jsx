@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ChakraProvider,
   Box,
@@ -18,26 +19,33 @@ import InventoryList from './dash';
 import AddInventory from '../asset/AddInventory.svg';
 import AddInventoryItem from './fileUpload';
 import Overview from './overview';
-// import { useLocation } from 'react-router-dom';
-// import { useEffect } from 'react';
-let token = localStorage.getItem('token');
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const googleToken = urlParams.get("token");
 
-  googleToken ? token = googleToken : token
 
-// useEffect(() => {
-//   const params = new URLSearchParams(location.search);
-//   const token = params.get('token');
-//   if (token) {
-//     localStorage.setItem('token', token);
-//     window.location.search = ''; 
-//   }
-// }, [location]);
+const Dashboard = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
 
-function Dashboard() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const token = urlParams.get('token');
+    
+    if (token) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('loginTime', new Date().getTime());
+      
+      navigate('/dashboard', { replace: true });
+      console.log('Google OAuth token stored successfully');
+    }
+
+    const storedToken = localStorage.getItem('token');
+    if (!storedToken) {
+      navigate('/login');
+      return;
+    }
+    
+  }, [location, navigate]);
+
 
   return (
     <ChakraProvider>
