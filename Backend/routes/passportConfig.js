@@ -182,11 +182,38 @@ app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     failureRedirect: "https://client-orcin-three.vercel.app/login",
+    session: false,
   }),
   (req, res) => {
-    res.redirect("https://client-orcin-three.vercel.app/dashboard");
+    const token = jwt.sign({ userId: req.user.id }, process.env.JWT_SECRET, {
+      expiresIn: '24h',
+    });
+
+    res.redirect(
+      `https://client-orcin-three.vercel.app/dashboard?token=${token}`
+    );
   }
 );
 
+const authenticateJWT = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (token) {
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      req.user = user;
+      next();
+    });
+  } else {
+    res.sendStatus(401);
+  }
+};
+
+// Example protected route
+app.get('/protected', authenticateJWT, (req, res) => {
+  res.json({ message: "You have accessed a protected route!", user: req.user });
+});
 module.exports = app;
 
