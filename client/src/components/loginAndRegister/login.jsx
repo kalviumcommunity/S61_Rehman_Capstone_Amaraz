@@ -31,17 +31,20 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await api.post('/user/login', { email, password });
-
+      const response = await api.post('/login', { email, password });
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('loginTime', new Date().getTime());
       navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data || 'Login failed');
+
+    } catch (error) {
+      setError(error.response?.data || 'Login failed');
     }
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = 'https://s61-rehman-capstone-amaraz.onrender.com/auth/google';
+    window.location.href = "https://s61-rehman-capstone-amaraz.onrender.com/auth/google";
   };
+
   return (
       <Container maxW={'7xl'} py={{ base: 10, sm: 10, lg: 16 }}>
         <Box

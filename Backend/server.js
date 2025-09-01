@@ -16,13 +16,7 @@ const path = require('path');
 
 
 app.use(express.json());
-app.use(cookieParser());
-
-app.use(cors({
-  origin: 'https://client-orcin-three.vercel.app',
-  credentials: true,
-}));
-// app.use(cors());
+app.use(cors());
 app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -33,10 +27,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes);
 
-// app.use(cors({
-//   origin: 'https://client-orcin-three.vercel.app/',
-//   credentials: true
-// }));
+app.use(cors({
+  origin: 'https://client-orcin-three.vercel.app/',
+  credentials: true
+}));
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))
