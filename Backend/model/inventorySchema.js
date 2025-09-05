@@ -21,15 +21,20 @@ const inventoryItemSchema = new Schema({
     supplier: { 
         type: String 
     },
-    imageUrl: {
-         type: String ,
-
-    },
     userId: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true 
-        },
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'completed'],
+        default: 'completed',
+    },
+    pendingQuantity: { 
+        type: Number, 
+        default: 0 
+    }
 }, 
 {
     timestamps: true

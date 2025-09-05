@@ -12,7 +12,9 @@ const port = 3000;
 const userRoutes = require('./routes/userRoutes');
 const passportConfig = require('./routes/passportConfig');
 const inventoryRoutes = require('./routes');
-const path = require('path');
+const orderRoutes = require('./orderRoutes');
+const completedOrdersRoute = require('./completedorderRoutes'); 
+const overviewRoutes = require('./overview');
 
 
 app.use(express.json());
@@ -21,16 +23,13 @@ app.use(session({ secret: process.env.JWT_SECRET, resave: false, saveUninitializ
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passportConfig);
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 
 app.use('/user', userRoutes);
 app.use('/inventory', inventoryRoutes);
+app.use('/orders', orderRoutes);
+app.use('/orders', completedOrdersRoute);
+app.use( overviewRoutes);
 
-app.use(cors({
-  origin: 'https://client-orcin-three.vercel.app/',
-  credentials: true
-}));
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('Connected to MongoDB'))

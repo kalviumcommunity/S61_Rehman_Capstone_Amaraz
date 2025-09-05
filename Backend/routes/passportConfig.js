@@ -1,9 +1,10 @@
 const passport = require('passport');
 const express = require("express");
 const session = require("express-session");
-const jwt = require('jsonwebtoken');
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require('../model/userSchema'); 
+const jwt = require('jsonwebtoken');
+const User = require('../model/userSchema');
+require('dotenv').config();
 
 const app = express();
 
@@ -25,10 +26,14 @@ passport.use(
             googleId: profile.id
           });
           await user.save();
-          console.log("✅ New Google user saved:", user.email);
         }
-        
-        return done(null, user);
+
+        // Generate JWT token
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+          expiresIn: '24h',
+        });
+
+        return done(null, { user, token });
       } catch (err) {
         return done(err, null);
       }
@@ -37,12 +42,13 @@ passport.use(
 );
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, { id: user.user ? user.user.id : user.id, token: user.token });
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (serializedUser, done) => {
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(serializedUser.id);
+    user.token = serializedUser.token;
     done(null, user);
   } catch (err) {
     done(err, null);
@@ -71,13 +77,7 @@ app.get(
     failureRedirect: "https://client-orcin-three.vercel.app/login",
   }),
   (req, res) => {
-    // CREATE JWT TOKEN after successful Google authentication
-    const token = jwt.sign(
-      { userId: req.user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
+    const token = req.user.token;
     res.redirect(`https://client-orcin-three.vercel.app/dashboard?token=${token}`);
   }
 );
