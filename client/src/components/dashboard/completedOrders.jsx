@@ -30,7 +30,7 @@ function CompletedOrders() {
 
   const fetchCompletedOrders = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/orders/completed-orders', {
+      const res = await axios.get('https://s61-rehman-capstone-amaraz.onrender.com/orders/completed-orders', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCompletedOrders(res.data);

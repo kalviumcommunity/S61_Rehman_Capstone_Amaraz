@@ -3,28 +3,26 @@ import axios from 'axios';
 import {
   Box,
   Button,
-  Image,
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
-  useBreakpointValue,
+  Input,
   Stack,
   Heading,
   Text,
-  Flex,
-  Input,
   Badge,
   useToast,
+  useBreakpointValue,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalCloseButton,
   ModalFooter,
+  ModalCloseButton,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -34,39 +32,31 @@ import {
 
 function InventoryList() {
   const [items, setItems] = useState([]);
-  const [stats, setStats] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const token = localStorage.getItem('token');
-  const toast = useToast(); 
+  const toast = useToast();
+  const isTable = useBreakpointValue({ base: false, md: true });
+
+  const fetchItems = async () => {
+    try {
+      const res = await axios.get('https://s61-rehman-capstone-amaraz.onrender.com/inventory', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setItems(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await axios.get('https://s61-rehman-capstone-amaraz.onrender.com/inventory', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setItems(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    fetchData();
-
+    fetchItems();
   }, [token]);
-
-  const displayAsTable = useBreakpointValue({ base: false, md: true });
-
-  const filteredItems = items.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const openModal = (item) => {
     setSelectedItem(item);
-
     setShowModal(true);
   };
 
@@ -76,48 +66,52 @@ function InventoryList() {
     setQuantity(1);
   };
 
-  const handleAddToBill = () => {
-    if (!selectedItem || quantity < 1 && quantity > selectedItem.quantity) {
-      console.error('Invalid item or quantity');
+  const handleAddToBill = async () => {
+    if (!selectedItem || quantity < 1 || quantity > selectedItem.quantity) {
+      toast({
+        title: 'Invalid quantity',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
-  
-    const url = `https://s61-rehman-capstone-amaraz.onrender.com/inventory/update/${selectedItem._id}`;
-    const headers = { Authorization: `Bearer ${token}` };
-  
-    console.log(`Sending PUT request to ${url}`);
-    console.log('Headers:', headers);
-  
-    axios
-      .put(url, {
-        ...selectedItem,
-        pendingQuantity:quantity,
-        status: 'pending'
-      }, { headers })
-      .then(res => {
-        console.log('Response:', res.data);
-        toast({
-          title: "Item added successfully to bill",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      })
-      
-      .catch(err => {
-        toast({
-          title: "Error adding item to bill",
-          description: err.response?.data?.message || "An error occurred",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-        console.error('Error:', err);
+
+    try {
+      const res = await axios.put(
+        `https://s61-rehman-capstone-amaraz.onrender.com/inventory/update/${selectedItem._id}`,
+        {
+          pendingQuantity: quantity,
+          status: 'pending',
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast({
+        title: 'Item added to bill',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
       });
-  
-    console.log(`Adding ${quantity} of ${selectedItem.name} to bill.`);
-    closeModal();
+
+      fetchItems();
+      closeModal();
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: err.response?.data?.message || 'Something went wrong',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
+
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <Box bg="white" p={4}>
@@ -125,38 +119,34 @@ function InventoryList() {
       <Input
         placeholder="Search for items"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)} w={{ base: '100%', md: '50%' }} mb={{ base: 2, md: 0 }}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        w={{ base: '100%', md: '50%' }}
+        mb={{ base: 4, md: 6 }}
       />
-      <Text mb={10} mt={5}>
+      <Text mb={4}>
         Number of items: <Badge colorScheme="green">{filteredItems.length}</Badge>
       </Text>
-      {displayAsTable ? (
+
+      {isTable ? (
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>Image</Th>
-              <Th>Product Name</Th>
-              <Th>Quantity Available</Th>
+              <Th>Name</Th>
+              <Th>Available Quantity</Th>
               <Th>Price</Th>
               <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
-            {filteredItems.map(item => (
+            {filteredItems.map((item) => (
               <Tr key={item._id}>
-                <Td>
-                  <Image
-                    borderRadius="full"
-                    src={`https://s61-rehman-capstone-amaraz.onrender.com${item.imageUrl}`}
-                    alt={item.name}
-                    boxSize="80px"
-                  />
-                </Td>
                 <Td>{item.name}</Td>
                 <Td>{item.quantity}</Td>
-                <Td>${item.price}</Td>
+                <Td>₹{item.price}</Td>
                 <Td>
-                  <Button colorScheme="blue" onClick={() => openModal(item)}>Add to bill</Button>
+                  <Button colorScheme="blue" onClick={() => openModal(item)}>
+                    Add to bill
+                  </Button>
                 </Td>
               </Tr>
             ))}
@@ -164,29 +154,20 @@ function InventoryList() {
         </Table>
       ) : (
         <Stack spacing={4}>
-          {filteredItems.map(item => (
+          {filteredItems.map((item) => (
             <Box
               key={item._id}
               p={4}
               borderWidth="1px"
               borderRadius="lg"
-              overflow="hidden"
               display="flex"
               flexDirection="column"
               alignItems="center"
             >
-              <Image
-                borderRadius="full"
-                src={`https://s61-rehman-capstone-amaraz.onrender.com${item.imageUrl}`}
-                alt={item.name}
-                boxSize="80px"
-              />
-              <Text mt={2} fontSize="xl" fontWeight="bold">
-                {item.name}
-              </Text>
+              <Text fontWeight="bold">{item.name}</Text>
               <Text>Quantity: {item.quantity}</Text>
               <Text>Price: ${item.price}</Text>
-              <Button colorScheme="blue" mt={2} onClick={() => openModal(item)}>
+              <Button mt={2} colorScheme="blue" onClick={() => openModal(item)}>
                 Add to bill
               </Button>
             </Box>
@@ -201,7 +182,12 @@ function InventoryList() {
           <ModalCloseButton />
           <ModalBody>
             <Text mb={2}>Enter quantity:</Text>
-            <NumberInput defaultValue={quantity} min={1} max={selectedItem?.quantity} onChange={(value) => setQuantity(value)}>
+            <NumberInput
+              value={quantity}
+              min={1}
+              max={selectedItem?.quantity || 1}
+              onChange={(valueString) => setQuantity(parseInt(valueString))}
+            >
               <NumberInputField />
               <NumberInputStepper>
                 <NumberIncrementStepper />
@@ -209,7 +195,6 @@ function InventoryList() {
               </NumberInputStepper>
             </NumberInput>
           </ModalBody>
-
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleAddToBill}>
               Add

@@ -23,28 +23,22 @@ function AddItemModal({ isOpen, onClose }) {
   const [purchasedPrice, setPurchasedPrice] = useState('');
   const [price, setPrice] = useState('');
   const [supplier, setSupplier] = useState('');
-  const [image, setImage] = useState(null);
   const toast = useToast(); 
-
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('quantity', quantity);
-    formData.append('purchasedPrice', purchasedPrice);
-    formData.append('price', price);
-    formData.append('supplier', supplier);
-    formData.append('image', image);
+    const itemData = {
+      name,
+      quantity,
+      purchasedPrice,
+      price,
+      supplier,
+    };
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('https://s61-rehman-capstone-amaraz.onrender.com/inventory/post', formData, {
+      await axios.post('https://s61-rehman-capstone-amaraz.onrender.com/inventory/post', itemData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
         }
       });
@@ -102,12 +96,8 @@ function AddItemModal({ isOpen, onClose }) {
               <FormLabel>Supplier</FormLabel>
               <Input type="text" value={supplier} onChange={(e) => setSupplier(e.target.value)} />
             </FormControl>
-            {/* <FormControl isRequired mt={4}>
-              <FormLabel>Image</FormLabel>
-              <Input type="file" onChange={handleImageChange} />
-            </FormControl> */}
             <ModalFooter justifyContent="center" gap={"7px"}>
-            <Button color={"white"} colorScheme={"red"} onClick={onClose}>Cancel</Button>
+              <Button color={"white"} colorScheme={"red"} onClick={onClose}>Cancel</Button>
               <Button colorScheme="blue" mr={3} type="submit">
                 Add Item
               </Button>

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React , {useEffect} from  'react';
 import {
   ChakraProvider,
   Box,
@@ -19,33 +18,47 @@ import InventoryList from './dash';
 import AddInventory from '../asset/AddInventory.svg';
 import AddInventoryItem from './fileUpload';
 import Overview from './overview';
+import { getTokenFromUrl } from '../../utils/tokenUtils';
 
-
-
-const Dashboard = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+function Dashboard() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [tokenReady, setTokenReady] = React.useState(false);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('token');
-    
+    const token = getTokenFromUrl();
     if (token) {
+      console.log('Token from URL:', token);
+      try {
+        const tokenParts = token.split('.');
+        if (tokenParts.length === 3) {
+          const payload = JSON.parse(atob(tokenParts[1]));
+          console.log('Decoded token payload:', payload);
+        } else {
+          console.log('Token is not in JWT format');
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+      
       localStorage.setItem('token', token);
       localStorage.setItem('loginTime', new Date().getTime());
-      
-      navigate('/dashboard', { replace: true });
-      console.log('Google OAuth token stored successfully');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('token');
+      window.history.replaceState({}, document.title, url.toString());
+      setTokenReady(true);
+    }else if (localStorage.getItem('token')) {
+      setTokenReady(true);
+    }else {
+      console.log('No token found in URL');
+      const storedToken = localStorage.getItem('token');
+      console.log('Token from localStorage:', storedToken);
+      setTokenReady(true);
     }
+  }, []);
 
-    const storedToken = localStorage.getItem('token');
-    if (!storedToken) {
-      navigate('/login');
-      return;
-    }
-    
-  }, [location, navigate]);
-
+  if(!tokenReady){
+    return <div>Loading...</div>;
+  }
 
   return (
     <ChakraProvider>
@@ -54,10 +67,6 @@ const Dashboard = () => {
         <Box w={{ base: '100%', md: '94%' }} paddingLeft="5%">
           <Overview />
           <Box overflow="hidden">
-            {/* <Flex mb="4" alignItems="center" direction={{ base: 'column', md: 'row' }}>
-              <Input placeholder="Search" size="md" w={{ base: '100%', md: '50%' }} mb={{ base: 2, md: 0 }} />
-              <IconButton ml={{ base: 0, md: 2 }} aria-label="Search" icon={<SearchIcon />} />
-            </Flex> */}
             <Box maxHeight="400px" overflowY="auto">
               <InventoryList />
             </Box>

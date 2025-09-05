@@ -14,11 +14,14 @@ function Navbar() {
   const buttonSize = useBreakpointValue({ base: "5px", md: "50px" });
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    cookieStorageManager.remove('token');
+const handleLogout = async () => {
+  try {
+    localStorage.removeItem('token');    
     navigate('/');
-  };
+  } catch (error) {
+    console.error('Error during logout:', error);
+  }
+};
 
   return (
     <Box
@@ -40,7 +43,7 @@ function Navbar() {
       )}
       {isMobile ? (
         <>
-          <Box w="100%" textAlign="left" mb="4" flex={1} >
+          <Box w="100%" textAlign="left" mb="4" flex={1} display={{ base: "block", md: "none" }} >
             <Menu>
               <MenuButton
                 as={IconButton}

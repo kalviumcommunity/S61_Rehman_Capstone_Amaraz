@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Flex,
@@ -15,30 +15,17 @@ import {
   FormLabel,
   Alert,
 } from '@chakra-ui/react';
-import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import api from '../api';
 import SignIn from '../asset/login.svg';
 import { FcGoogle } from "react-icons/fc";
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // ADD: Handle token from Google OAuth redirect
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const token = urlParams.get('token');
-    
-    if (token) {
-      localStorage.setItem('token', token);
-      localStorage.setItem('loginTime', new Date().getTime());
-      // Remove token from URL and redirect to dashboard
-      navigate('/dashboard', { replace: true });
-    }
-  }, [location, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -48,7 +35,6 @@ const Login = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('loginTime', new Date().getTime());
       navigate('/dashboard');
-
     } catch (error) {
       setError(error.response?.data || 'Login failed');
     }
@@ -169,3 +155,4 @@ const Login = () => {
 };
 
 export default Login;
+
